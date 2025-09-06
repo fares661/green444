@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تطبيق الأحداث - منصة التفاعل</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --info: #4895ef;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --background: #f0f2f5;
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --prime-1: #ff9a8b;
+      --prime-2: #ff6b6b;
+      --prime-3: #ff3838;
+      --prime-4: #ff0000;
+      --prime-5: #d63031;
+      --prime-6: #b71540;
+      --prime-7: #8a0c4a;
+      --prime-8: #6a1b9a;
+      --prime-9: #4a148c;
+      --prime-10: #000000;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--background);
+      color: #333;
+      padding: 0;
+      margin: 0;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 20px;
+      border-radius: 0 0 15px 15px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 30px;
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    
+    .prime-badge {
+      position: relative;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 14px;
+      animation: glow 2s infinite;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+    }
+    
+    @keyframes glow {
+      0% { box-shadow: 0 0 5px currentColor; }
+      50% { box-shadow: 0 0 20px currentColor; }
+      100% { box-shadow: 0 0 5px currentColor; }
+    }
+    
+    .prime-1 { background: linear-gradient(135deg, var(--prime-1), var(--prime-2)); color: white; }
+    .prime-2 { background: linear-gradient(135deg, var(--prime-2), var(--prime-3)); color: white; }
+    .prime-3 { background: linear-gradient(135deg, var(--prime-3), var(--prime-4)); color: white; }
+    .prime-4 { background: linear-gradient(135deg, var(--prime-4), var(--prime-5)); color: white; }
+    .prime-5 { background: linear-gradient(135deg, var(--prime-5), var(--prime-6)); color: white; }
+    .prime-6 { background: linear-gradient(135deg, var(--prime-6), var(--prime-7)); color: white; }
+    .prime-7 { background: linear-gradient(135deg, var(--prime-7), var(--prime-8)); color: white; }
+    .prime-8 { 
+      background: linear-gradient(135deg, var(--prime-8), #4a148c);
+      color: white;
+      animation: super-glow 1.5s infinite alternate;
+    }
+    .prime-9 { 
+      background: linear-gradient(135deg, var(--prime-9), #120338);
+      color: white;
+      animation: ultra-glow 1s infinite alternate;
+    }
+    .prime-10 { 
+      background: linear-gradient(135deg, #000000, #ffd700, #000000);
+      color: #ffd700;
+      animation: legendary-glow 0.8s infinite alternate;
+      font-weight: 900;
+      font-size: 16px;
+      text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+    }
+    
+    @keyframes legendary-glow {
+      0% { 
+        box-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffd700;
+        transform: scale(1);
+      }
+      100% { 
+        box-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700, 0 0 60px #ffd700;
+        transform: scale(1.05);
+      }
+    }
+    
+    @keyframes super-glow {
+      0% { box-shadow: 0 0 10px var(--prime-8), 0 0 20px var(--prime-8); }
+      100% { box-shadow: 0 0 20px var(--prime-8), 0 0 40px var(--prime-8); }
+    }
+    
+    @keyframes ultra-glow {
+      0% { box-shadow: 0 0 15px var(--prime-9), 0 0 30px var(--prime-9); }
+      100% { box-shadow: 0 0 30px var(--prime-9), 0 0 60px var(--prime-9); }
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      background: var(--success);
+      color: white;
+      box-shadow: var(--card-shadow);
+      z-index: 1000;
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+    
+    .notification.error {
+      background: var(--danger);
+    }
+    
+    .big-prize-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 1100;
+      display: none;
+      text-align: center;
+      animation: zoomIn 0.5s;
+      max-width: 90%;
+      width: 500px;
+    }
+    
+    .countdown-animation {
+      font-size: 48px;
+      font-weight: bold;
+      color: var(--prime-8);
+      margin: 20px 0;
+      animation: countdownPulse 0.5s infinite;
+    }
+    
+    @keyframes countdownPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    
+    .prime-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 1100;
+      display: none;
+      text-align: center;
+      animation: zoomIn 0.5s;
+      max-width: 90%;
+      width: 400px;
+    }
+    
+    .prime-level {
+      font-size: 32px;
+      font-weight: bold;
+      margin: 15px 0;
+      animation: colorChange 3s infinite alternate;
+    }
+    
+    @keyframes colorChange {
+      0% { color: var(--prime-1); }
+      25% { color: var(--prime-3); }
+      50% { color: var(--prime-5); }
+      75% { color: var(--prime-7); }
+      100% { color: var(--prime-9); }
+    }
+    
+    .prime-icon {
+      font-size: 64px;
+      margin-bottom: 15px;
+      animation: bounce 1s infinite alternate;
+    }
+    
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+    
+    .prize-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 1100;
+      display: none;
+      text-align: center;
+      animation: zoomIn 0.5s;
+      max-width: 90%;
+      width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .prizes-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .prize-item-notification {
+      text-align: center;
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .prize-item-notification img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 5px;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .modal-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    .modal-option {
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-align: center;
+    }
+    
+    .modal-option:hover {
+      background: #eee;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes zoomIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    .user-box {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-id-label {
+      font-weight: 600;
+    }
+    
+    .user-id-value {
+      direction: ltr;
+      text-align: left;
+      padding: 8px 12px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      font-family: monospace;
+      flex-grow: 1;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 10px 15px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.3s;
+      text-align: center;
+    }
+    
+    .btn:hover {
+      background: var(--secondary);
+    }
+    
+    .btn-success {
+      background: var(--success);
+    }
+    
+    .btn-success:hover {
+      background: #3aafd6;
+    }
+    
+    .btn-warning {
+      background: var(--warning);
+    }
+    
+    .btn-warning:hover {
+      background: #e4850d;
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+    }
+    
+    .btn-danger:hover {
+      background: #e3126e;
+    }
+    
+    .btn-premium {
+      background: var(--prime-9);
+    }
+    
+    .btn-premium:hover {
+      background: #3a0c6e;
+    }
+    
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .event-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s;
+      position: relative;
+    }
+    
+    .event-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .event-premium {
+      border: 3px solid var(--prime-8);
+      box-shadow: 0 0 15px var(--prime-8);
+    }
+    
+    .event-premium-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--prime-8);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      animation: glow 2s infinite;
+    }
+    
+    .event-countdown {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .event-header {
+      padding: 15px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+    
+    .event-body {
+      padding: 15px;
+    }
+    
+    .event-footer {
+      padding: 15px;
+      background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .prize-img {
+      width: 100%;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    
+    .small-img {
+      height: 100px;
+      object-fit: cover;
+    }
+    
+    .medium-img {
+      height: 150px;
+      object-fit: cover;
+    }
+    
+    .countdown {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 8px;
+      border-radius: 6px;
+      text-align: center;
+      margin: 10px 0;
+    }
+    
+    .countdown-text {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    .spin-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .vault-modal, .prizes-modal, .buy-cards-modal, .share-cards-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .vault-content, .prizes-content, .buy-cards-content, .share-cards-content {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .vault-header, .prizes-header, .buy-cards-header, .share-cards-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .vault-title, .prizes-title, .buy-cards-title, .share-cards-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .vault-grid, .prizes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .card-item, .prize-item {
+      text-align: center;
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .card-item img, .prize-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 5px;
+    }
+    
+    .card-count, .prize-count {
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
+    .no-events {
+      text-align: center;
+      padding: 40px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .no-events i {
+      font-size: 48px;
+      color: #ccc;
+      margin-bottom: 15px;
+    }
+    
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1050;
+    }
+    
+    .spinner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1060;
+      display: none;
+    }
+    
+    .spinner i {
+      font-size: 48px;
+      color: white;
+      animation: spin 1s linear infinite;
+    }
+    
+    .progress-container {
+      margin: 15px 0;
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .progress-bar {
+      height: 20px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), var(--primary));
+      border-radius: 10px;
+      transition: width 0.5s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .progress-label {
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      margin-top: 5px;
+    }
+    
+    .prime-progress {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+    }
+    
+    .prime-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .prime-progress-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .prime-levels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      position: relative;
+      height: 30px;
+    }
+    
+    .prime-level-marker {
+      position: absolute;
+      bottom: 0;
+      width: 4px;
+      height: 20px;
+      background: #ddd;
+      transform: translateX(-50%);
+    }
+    
+    .prime-level-marker.active {
+      background: var(--prime-8);
+      height: 30px;
+    }
+    
+    .prime-level-label {
+      position: absolute;
+      bottom: -25px;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .prime-level-label.active {
+      color: var(--prime-8);
+      font-weight: 900;
+    }
+    
+    .prime-locked {
+      filter: blur(2px);
+      opacity: 0.8;
+    }
+    
+    .prime-unlock-countdown {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      z-index: 10;
+      text-align: center;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    .buy-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .buy-option {
+      text-align: center;
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    
+    .buy-option:hover {
+      transform: translateY(-5px);
+      background: #eee;
+    }
+    
+    .buy-option.selected {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .legendary-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #000000, #2c2c2c);
+      color: #ffd700;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 0 30px #ffd700, 0 0 60px rgba(255, 215, 0, 0.5);
+      z-index: 1200;
+      display: none;
+      text-align: center;
+      animation: zoomIn 0.5s;
+      max-width: 90%;
+      width: 500px;
+      border: 3px solid #ffd700;
+    }
+    
+    .legendary-icon {
+      font-size: 64px;
+      margin-bottom: 15px;
+      color: #ffd700;
+      animation: spin 3s linear infinite;
+      text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      .user-box {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .spin-buttons {
+        flex-direction: column;
+      }
+      
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .vault-grid, .prizes-grid, .prizes-container {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      }
+      
+      .prize-notification, .prime-notification, .big-prize-notification, .legendary-notification {
+        width: 90%;
+        padding: 15px;
+      }
+      
+      .prime-levels {
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+      
+      .buy-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update, get, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDx-klJiA6UWYLxOkjt8WT43Ov6pYuTb8M",
+      authDomain: "education-ff3f1.firebaseapp.com",
+      projectId: "education-ff3f1",
+      storageBucket: "education-ff3f1.firebasestorage.app",
+      messagingSenderId: "933135502252",
+      appId: "1:933135502252:web:38aaf32ab7345838fd0809",
+      measurementId: "G-PKC0LYQKEP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // دالة لعرض الإشعارات
+    function showNotification(message, isSuccess = true) {
+      const notification = document.getElementById("notification");
+      notification.textContent = message;
+      notification.className = isSuccess ? "notification" : "notification error";
+      notification.style.display = "block";
+      
+      setTimeout(() => {
+        notification.style.display = "none";
+      }, 3000);
+    }
+
+    // عرض نافذة الجائزة
+    function showPrizes(prizes, isBigPrize = false) {
+      const prizeNotification = document.getElementById("prizeNotification");
+      const prizeTitle = document.getElementById("prizeTitle");
+      const prizesContainer = document.getElementById("prizesContainer");
+      
+      prizeTitle.textContent = isBigPrize ? `مبروك! لقد فزت بالجائزة الكبرى` : `مبروك! لقد فزت بجوائز`;
+      prizesContainer.innerHTML = "";
+      
+      prizes.forEach(prize => {
+        const prizeItem = document.createElement("div");
+        prizeItem.className = "prize-item-notification";
+        prizeItem.innerHTML = `
+          <img src="${prize.image}" alt="${prize.name}">
+          <div>${prize.name}</div>
+          ${prize.number ? `<div class="prize-number">رقم الجائزة: ${prize.number}</div>` : ''}
+        `;
+        prizesContainer.appendChild(prizeItem);
+      });
+      
+      prizeNotification.style.display = "block";
+      document.getElementById("overlay").style.display = "block";
+    }
+
+    // عرض نافذة الجائزة الكبرى مع العداد
+    function showBigPrizeNotification(eventName, prizeNumber) {
+      const bigPrizeNotification = document.getElementById("bigPrizeNotification");
+      const countdownElement = document.getElementById("countdownAnimation");
+      const prizeNumberElement = document.getElementById("prizeNumber");
+      
+      bigPrizeNotification.style.display = "block";
+      document.getElementById("overlay").style.display = "block";
+      
+      // بدء العد التنازلي
+      let countdown = 5;
+      countdownElement.textContent = countdown;
+      
+      const countdownInterval = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+        
+        if (countdown <= 0) {
+          clearInterval(countdownInterval);
+          countdownElement.style.display = "none";
+          prizeNumberElement.textContent = `رقم الجائزة: ${prizeNumber}`;
+          prizeNumberElement.style.display = "block";
+        }
+      }, 1000);
+    }
+
+    // عرض نافذة Prime
+    function showPrimeNotification(level) {
+      const primeNotification = document.getElementById("primeNotification");
+      const primeLevel = document.getElementById("primeLevel");
+      const primeIcon = document.getElementById("primeIcon");
+      
+      primeLevel.textContent = `Prime ${level}`;
+      primeLevel.className = `prime-level prime-${level}`;
+      primeIcon.className = `prime-icon fas fa-crown prime-${level}`;
+      
+      primeNotification.style.display = "block";
+      document.getElementById("overlay").style.display = "block";
+      
+      setTimeout(() => {
+        primeNotification.style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+      }, 5000);
+    }
+
+    // عرض إشعار Prime 10 الأسطوري
+    function showLegendaryNotification() {
+      const legendaryNotification = document.getElementById("legendaryNotification");
+      legendaryNotification.style.display = "block";
+      document.getElementById("overlay").style.display = "block";
+      
+      setTimeout(() => {
+        legendaryNotification.style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+      }, 8000);
+    }
+
+    // إنشاء معرف فريد باستخدام الطابع الزمني وقيم عشوائية
+    function generateUniqueId() {
+      const timestamp = Date.now().toString(36);
+      const randomStr = Math.random().toString(36).substr(2, 9);
+      return `user-${timestamp}-${randomStr}`;
+    }
+    
+    // تحميل أو إنشاء معرف المستخدم
+    let currentUserId = localStorage.getItem("userId");
+    if (!currentUserId) {
+      currentUserId = generateUniqueId();
+      localStorage.setItem("userId", currentUserId);
+      localStorage.setItem("userPrizes", JSON.stringify({}));
+      localStorage.setItem("userProgress", JSON.stringify({}));
+      localStorage.setItem("userPrime", JSON.stringify({
+        level: 0,
+        totalCards: 0,
+        achieved: Date.now()
+      }));
+      localStorage.setItem("lastRewardTime", "0");
+    }
+
+    // تخزين الجوائز التي فاز بها المستخدم
+    let userPrizes = JSON.parse(localStorage.getItem("userPrizes")) || {};
+    
+    // تخزين تقدم المستخدم نحو الجوائز الكبرى
+    let userProgress = JSON.parse(localStorage.getItem("userProgress")) || {};
+    
+    // تخزين مستوى Prime للمستخدم
+    let userPrime = JSON.parse(localStorage.getItem("userPrime")) || {
+      level: 0,
+      totalCards: 0,
+      achieved: Date.now()
+    };
+
+    // حساب مستوى Prime بناءً على عدد البطاقات
+    function calculatePrimeLevel(totalCards) {
+      if (totalCards >= 15000) return 10;
+      if (totalCards >= 8000) return 9;
+      if (totalCards >= 3500) return 8;
+      if (totalCards >= 3000) return 7;
+      if (totalCards >= 2500) return 6;
+      if (totalCards >= 2000) return 5;
+      if (totalCards >= 1500) return 4;
+      if (totalCards >= 1000) return 3;
+      if (totalCards >= 600) return 2;
+      if (totalCards >= 200) return 1;
+      return 0;
+    }
+
+    // الحصول على آخر حدث تم إنشاؤه
+    async function getLatestEvent() {
+      try {
+        const eventsRef = ref(db, "events/");
+        const snapshot = await get(eventsRef);
+        const data = snapshot.val();
+        
+        if (!data) return null;
+        
+        let latestEvent = null;
+        let latestTime = 0;
+        
+        for (const [eventId, eventData] of Object.entries(data)) {
+          if (eventData.start > latestTime) {
+            latestTime = eventData.start;
+            latestEvent = { id: eventId, ...eventData };
+          }
+        }
+        
+        return latestEvent;
+      } catch (error) {
+        console.error("Error getting latest event:", error);
+        return null;
+      }
+    }
+
+    // منح مكافأة Prime 10 كل نصف ساعة
+    async function checkPrime10Reward() {
+      if (userPrime.level < 10) return;
+      
+      const now = Date.now();
+      const lastRewardTime = parseInt(localStorage.getItem("lastRewardTime") || "0");
+      const halfHour = 30 * 60 * 1000; // نصف ساعة بالميلي ثانية
+      
+      if (now - lastRewardTime >= halfHour) {
+        const latestEvent = await getLatestEvent();
+        if (!latestEvent) return;
+        
+        // منح 500 بطاقة من آخر حدث
+        const vaultRef = ref(db, `vaults/${currentUserId}/${latestEvent.id}`);
+        get(vaultRef).then(snapshot => {
+          let current = snapshot.exists() ? snapshot.val().count : 0;
+          
+          update(vaultRef, { 
+            count: current + 500, 
+            updatedAt: Date.now(),
+            eventId: latestEvent.id,
+            userId: currentUserId
+          }).then(() => {
+            localStorage.setItem("lastRewardTime", now.toString());
+            
+            // عرض الإشعار الأسطوري
+            const legendaryNotification = document.getElementById("legendaryNotification");
+            const eventNameElement = document.getElementById("legendaryEventName");
+            const cardsCountElement = document.getElementById("legendaryCardsCount");
+            
+            eventNameElement.textContent = latestEvent.name;
+            cardsCountElement.textContent = "500";
+            
+            legendaryNotification.style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+            
+            setTimeout(() => {
+              legendaryNotification.style.display = "none";
+              document.getElementById("overlay").style.display = "none";
+            }, 8000);
+            
+            // تحديث مستوى Prime بعد الإضافة
+            updatePrimeLevel();
+          });
+        });
+      }
+    }
+
+    // تحديث مستوى Prime
+    function updatePrimeLevel() {
+      const vaultRef = ref(db, `vaults/${currentUserId}`);
+      get(vaultRef).then(snapshot => {
+        const data = snapshot.val() || {};
+        let totalCards = 0;
+        
+        Object.values(data).forEach(eventData => {
+          totalCards += eventData.count || 0;
+        });
+        
+        // مستوى Prime لا ينقص أبداً، فقط يزداد
+        const newLevel = calculatePrimeLevel(totalCards);
+        const oldLevel = userPrime.level;
+        
+        // الحفاظ على أعلى مستوى تم تحقيقه
+        const highestLevel = Math.max(oldLevel, newLevel);
+        
+        userPrime.totalCards = totalCards;
+        
+        if (highestLevel > oldLevel) {
+          userPrime.level = highestLevel;
+          userPrime.achieved = Date.now();
+          localStorage.setItem("userPrime", JSON.stringify(userPrime));
+          
+          if (highestLevel === 10) {
+            showLegendaryNotification();
+            // بدء فحص المكافآت لـ Prime 10
+            setInterval(checkPrime10Reward, 60000); // فحص كل دقيقة
+          } else {
+            showPrimeNotification(highestLevel);
+          }
+        } else if (highestLevel !== oldLevel) {
+          userPrime.level = highestLevel;
+          localStorage.setItem("userPrime", JSON.stringify(userPrime));
+        }
+        
+        updatePrimeDisplay();
+      }).catch(error => {
+        console.error("Error updating prime level:", error);
+      });
+    }
+
+    // تحديث عرض Prime في الواجهة
+    function updatePrimeDisplay() {
+      const primeBadge = document.getElementById("primeBadge");
+      const primeProgress = document.getElementById("primeProgress");
+      const primeLevels = document.getElementById("primeLevels");
+      
+      if (userPrime.level > 0) {
+        primeBadge.innerHTML = `<span class="prime-${userPrime.level}">Prime ${userPrime.level}</span>`;
+        primeBadge.style.display = "block";
+      } else {
+        primeBadge.style.display = "none";
+      }
+      
+      // تحديث شريط تقدم Prime
+      const nextThreshold = getNextPrimeThreshold();
+      if (nextThreshold) {
+        const progress = (userPrime.totalCards / nextThreshold) * 100;
+        primeProgress.innerHTML = `
+          <div class="prime-progress-header">
+            <div class="prime-progress-title">تقدم Prime</div>
+            <div>${userPrime.totalCards} / ${nextThreshold}</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${Math.min(100, progress)}%">${Math.round(progress)}%</div>
+          </div>
+          <div class="progress-label">
+            ${userPrime.level < 10 ? `تبقى ${nextThreshold - userPrime.totalCards} بطاقة للـ Prime ${userPrime.level + 1}` : 'أنت في أعلى مستوى Prime!'}
+          </div>
+        `;
+      }
+      
+      // تحديث علامات المستويات
+      primeLevels.innerHTML = "";
+      const levels = [200, 600, 1000, 1500, 2000, 2500, 3000, 3500, 8000, 15000];
+      
+      levels.forEach((threshold, index) => {
+        const level = index + 1;
+        const position = (threshold / 15000) * 100;
+        const isActive = userPrime.level >= level;
+        
+        const marker = document.createElement("div");
+        marker.className = `prime-level-marker ${isActive ? 'active' : ''}`;
+        marker.style.left = `${position}%`;
+        
+        const label = document.createElement("div");
+        label.className = `prime-level-label ${isActive ? 'active' : ''}`;
+        label.textContent = level;
+        label.style.left = `${position}%`;
+        
+        primeLevels.appendChild(marker);
+        primeLevels.appendChild(label);
+      });
+    }
+
+    // الحصول على عتبة Prime التالية
+    function getNextPrimeThreshold() {
+      const levels = [200, 600, 1000, 1500, 2000, 2500, 3000, 3500, 8000, 15000];
+      for (const threshold of levels) {
+        if (userPrime.totalCards < threshold) {
+          return threshold;
+        }
+      }
+      return null;
+    }
+
+    // الحصول على رقم جائزة كبرى حقيقي (متسلسل)
+    async function getNextBigPrizeNumber(eventId) {
+      try {
+        const prizeNumbersRef = ref(db, `bigPrizeNumbers/${eventId}`);
+        const snapshot = await get(prizeNumbersRef);
+        
+        let nextNumber = 1;
+        if (snapshot.exists()) {
+          nextNumber = snapshot.val().lastNumber + 1;
+        }
+        
+        await update(prizeNumbersRef, { lastNumber: nextNumber });
+        return nextNumber;
+      } catch (error) {
+        console.error("Error getting prize number:", error);
+        return Math.floor(Math.random() * 1000) + 1; // Fallback إلى رقم عشوائي
+      }
+    }
+
+    // تحديث عداد الأحداث الحصرية
+    function updatePrimeExclusiveEvents() {
+      const eventCards = document.querySelectorAll('.event-card');
+      const now = Date.now();
+      
+      eventCards.forEach(card => {
+        const eventId = card.getAttribute('data-event-id');
+        if (!eventId) return;
+        
+        const primeExclusive = card.getAttribute('data-prime-exclusive') === 'true';
+        const prime9Exclusive = card.getAttribute('data-prime9-exclusive') === 'true';
+        const startTime = parseInt(card.getAttribute('data-start-time'));
+        const delayTime = 5 * 60 * 60 * 1000; // 5 ساعات للأحداث العادية
+        const prime9DelayTime = 60 * 60 * 1000; // ساعة واحدة لأحداث Prime 9
+        
+        if (prime9Exclusive) {
+          // حدث Prime 9 حصري
+          if (userPrime.level < 9) {
+            if (now < startTime + prime9DelayTime) {
+              // إظهار العداد وإخفاء أزرار اللف
+              const remainingTime = startTime + prime9DelayTime - now;
+              const hours = Math.floor(remainingTime / (1000 * 60 * 60));
+              const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+              
+              let countdownEl = card.querySelector('.prime-unlock-countdown');
+              if (!countdownEl) {
+                countdownEl = document.createElement('div');
+                countdownEl.className = 'prime-unlock-countdown';
+                card.appendChild(countdownEl);
+              }
+              
+              countdownEl.textContent = `يفتح بعد: ${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+              
+              // إخفاء أزرار اللف
+              const spinButtons = card.querySelector('.spin-buttons');
+              if (spinButtons) spinButtons.classList.add('hidden');
+              
+              // إضافة تأثير القفل
+              card.classList.add('prime-locked');
+            } else {
+              // إزالة القفل عند انتهاء الوقت
+              card.classList.remove('prime-locked');
+              const countdownEl = card.querySelector('.prime-unlock-countdown');
+              if (countdownEl) countdownEl.remove();
+              
+              // إظهار أزرار اللف
+              const spinButtons = card.querySelector('.spin-buttons');
+              if (spinButtons) spinButtons.classList.remove('hidden');
+            }
+          } else {
+            // إزالة القفل لمستخدمي Prime 9
+            card.classList.remove('prime-locked');
+            const countdownEl = card.querySelector('.prime-unlock-countdown');
+            if (countdownEl) countdownEl.remove();
+            
+            // إظهار أزرار اللف
+            const spinButtons = card.querySelector('.spin-buttons');
+            if (spinButtons) spinButtons.classList.remove('hidden');
+          }
+        } else if (primeExclusive && userPrime.level < 7) {
+          // حدث Prime 7 حصري
+          if (now < startTime + delayTime) {
+            // إظهار العداد وإخفاء أزرار اللف
+            const remainingTime = startTime + delayTime - now;
+            const hours = Math.floor(remainingTime / (1000 * 60 * 60));
+            const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+            
+            let countdownEl = card.querySelector('.prime-unlock-countdown');
+            if (!countdownEl) {
+              countdownEl = document.createElement('div');
+              countdownEl.className = 'prime-unlock-countdown';
+              card.appendChild(countdownEl);
+            }
+            
+            countdownEl.textContent = `يفتح بعد: ${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // إخفاء أزرار اللف
+            const spinButtons = card.querySelector('.spin-buttons');
+            if (spinButtons) spinButtons.classList.add('hidden');
+            
+            // إضافة تأثير القفل
+            card.classList.add('prime-locked');
+          } else {
+            // إزالة القفل عند انتهاء الوقت
+            card.classList.remove('prime-locked');
+            const countdownEl = card.querySelector('.prime-unlock-countdown');
+            if (countdownEl) countdownEl.remove();
+            
+            // إظهار أزرار اللف
+            const spinButtons = card.querySelector('.spin-buttons');
+            if (spinButtons) spinButtons.classList.remove('hidden');
+          }
+        } else if (primeExclusive && userPrime.level >= 7) {
+          // إزالة القفل لمستخدمي Prime 7+
+          card.classList.remove('prime-locked');
+          const countdownEl = card.querySelector('.prime-unlock-countdown');
+          if (countdownEl) countdownEl.remove();
+          
+          // إظهار أزرار اللف
+          const spinButtons = card.querySelector('.spin-buttons');
+          if (spinButtons) spinButtons.classList.remove('hidden');
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("userIdText").textContent = currentUserId;
+      
+      // تحديث عرض Prime
+      updatePrimeLevel();
+      
+      // فحص مكافأة Prime 10 إذا كان المستخدم مؤهلاً
+      if (userPrime.level >= 10) {
+        setInterval(checkPrime10Reward, 60000); // فحص كل دقيقة
+      }
+      
+      // نسخ المعرف
+      window.copyId = function() {
+        navigator.clipboard.writeText(currentUserId).then(() => {
+          showNotification("✅ تم نسخ المعرف إلى الحافظة");
+        }).catch(err => {
+          showNotification("❌ فشل في نسخ المعرف", false);
+        });
+      };
+
+      // تسجيل الخروج
+      window.logout = function() {
+        if (confirm("هل أنت متأكد من تسجيل الخروج؟ سيتم إنشاء حساب جديد بمعرف مختلف")) {
+          localStorage.removeItem("userId");
+          localStorage.removeItem("userPrizes");
+          localStorage.removeItem("userProgress");
+          localStorage.removeItem("userPrime");
+          localStorage.removeItem("lastRewardTime");
+          window.location.reload();
+        }
+      };
+
+      // فتح نافذة المشاركة
+      window.shareAccount = function() {
+        document.getElementById("shareModal").style.display = "flex";
+        showShareOptions();
+      };
+
+      // مشاركة كلمة المرور
+      window.sharePassword = function() {
+        const password = document.getElementById("sharePasswordInput").value;
+        if (!password) {
+          showNotification("⚠️ الرجاء إدخال كلمة مرور", false);
+          return;
+        }
+
+        // حفظ كلمة المرور في Firebase
+        const passwordRef = ref(db, `passwords/${currentUserId}`);
+        set(passwordRef, {
+          password: password,
+          userId: currentUserId,
+          createdAt: Date.now()
+        }).then(() => {
+          showNotification("✅ تم حفظ كلمة المرور بنجاح");
+          document.getElementById("sharePasswordInput").value = "";
+          document.getElementById("shareModal").style.display = "none";
+        }).catch(error => {
+          showNotification("❌ فشل في حفظ كلمة المرور: " + error.message, false);
+        });
+      };
+
+      // الدخول بحساب آخر
+      window.loginWithPassword = function() {
+        const userId = document.getElementById("loginUserIdInput").value.trim();
+        const password = document.getElementById("loginPasswordInput").value;
+        
+        if (!userId || !password) {
+          showNotification("⚠️ الرجاء إدخال المعرف وكلمة المرور", false);
+          return;
+        }
+
+        // التحقق من كلمة المرور في Firebase
+        const passwordRef = ref(db, `passwords/${userId}`);
+        get(passwordRef).then(snapshot => {
+          if (snapshot.exists() && snapshot.val().password === password) {
+            // نجح تسجيل الدخول
+            localStorage.setItem("userId", userId);
+            localStorage.setItem("userPrizes", JSON.stringify({}));
+            localStorage.setItem("userProgress", JSON.stringify({}));
+            localStorage.setItem("userPrime", JSON.stringify({
+              level: 0,
+              totalCards: 0,
+              achieved: Date.now()
+            }));
+            localStorage.setItem("lastRewardTime", "0");
+            showNotification("✅ تم تسجيل الدخول بنجاح");
+            document.getElementById("loginUserIdInput").value = "";
+            document.getElementById("loginPasswordInput").value = "";
+            document.getElementById("shareModal").style.display = "none";
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          } else {
+            showNotification("❌ كلمة المرور أو المعرف غير صحيح", false);
+          }
+        }).catch(error => {
+          showNotification("❌ فشل في تسجيل الدخول: " + error.message, false);
+        });
+      };
+
+      // عرض خيارات المشاركة
+      window.showShareOptions = function() {
+        document.getElementById("shareOptions").style.display = "block";
+        document.getElementById("sharePasswordSection").style.display = "none";
+        document.getElementById("loginSection").style.display = "none";
+      };
+
+      // عرض قسم مشاركة كلمة المرور
+      window.showSharePasswordSection = function() {
+        document.getElementById("shareOptions").style.display = "none";
+        document.getElementById("sharePasswordSection").style.display = "block";
+        document.getElementById("loginSection").style.display = "none";
+      };
+
+      // عرض قسم تسجيل الدخول
+      window.showLoginSection = function() {
+        document.getElementById("shareOptions").style.display = "none";
+        document.getElementById("sharePasswordSection").style.display = "none";
+        document.getElementById("loginSection").style.display = "block";
+      };
+
+      // إغلاق النافذة
+      window.closeModal = function() {
+        document.getElementById("shareModal").style.display = "none";
+        document.getElementById("loginUserIdInput").value = "";
+        document.getElementById("loginPasswordInput").value = "";
+        document.getElementById("sharePasswordInput").value = "";
+      };
+
+      // فتح نافذة شراء البطاقات
+      window.openBuyCards = function() {
+        document.getElementById("buyCardsModal").style.display = "flex";
+        loadActiveEventsForPurchase();
+      };
+
+      // فتح نافذة مشاركة البطاقات
+      window.openShareCards = function() {
+        document.getElementById("shareCardsModal").style.display = "flex";
+        loadUserEventsForSharing();
+      };
+
+      // تحميل أحداث المستخدم للمشاركة
+      async function loadUserEventsForSharing() {
+        const eventsSelect = document.getElementById("shareEventsSelect");
+        eventsSelect.innerHTML = "";
+        
+        try {
+          const vaultRef = ref(db, `vaults/${currentUserId}`);
+          const snapshot = await get(vaultRef);
+          const data = snapshot.val() || {};
+          
+          if (Object.keys(data).length === 0) {
+            eventsSelect.innerHTML = "<option value=''>لا توجد بطاقات في الخزنة</option>";
+            return;
+          }
+          
+          // الحصول على معلومات الأحداث
+          const eventsRef = ref(db, "events/");
+          const eventsSnapshot = await get(eventsRef);
+          const eventsData = eventsSnapshot.val() || {};
+          
+          let hasEvents = false;
+          
+          for (const [eventId, vaultData] of Object.entries(data)) {
+            if (vaultData.count > 0) {
+              hasEvents = true;
+              const eventName = eventsData[eventId]?.name || `الحدث (${eventId})`;
+              const option = document.createElement("option");
+              option.value = eventId;
+              option.textContent = `${eventName} (${vaultData.count} بطاقة)`;
+              option.setAttribute("data-max", vaultData.count);
+              eventsSelect.appendChild(option);
+            }
+          }
+          
+          if (!hasEvents) {
+            eventsSelect.innerHTML = "<option value=''>لا توجد بطاقات في الخزنة</option>";
+          }
+        } catch (error) {
+          console.error("Error loading events for sharing:", error);
+          eventsSelect.innerHTML = "<option value=''>خطأ في تحميل الأحداث</option>";
+        }
+      }
+
+      // تحديث الحد الأقصى للبطاقات عند تغيير الحدث
+      window.updateMaxCards = function() {
+        const eventSelect = document.getElementById("shareEventsSelect");
+        const amountInput = document.getElementById("shareAmount");
+        const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+        
+        if (selectedOption && selectedOption.value) {
+          const maxCards = parseInt(selectedOption.getAttribute("data-max"));
+          amountInput.setAttribute("max", maxCards);
+          amountInput.placeholder = `الحد الأقصى: ${maxCards}`;
+        }
+      };
+
+      // مشاركة البطاقات مع مستخدم آخر
+      window.shareCardsWithUser = function() {
+        const targetUserId = document.getElementById("shareUserIdInput").value.trim();
+        const eventId = document.getElementById("shareEventsSelect").value;
+        const amount = parseInt(document.getElementById("shareAmount").value);
+        
+        if (!targetUserId) {
+          showNotification("⚠️ الرجاء إدخال معرف المستخدم", false);
+          return;
+        }
+        
+        if (!eventId) {
+          showNotification("⚠️ الرجاء اختيار حدث", false);
+          return;
+        }
+        
+        if (!amount || amount <= 0) {
+          showNotification("⚠️ الرجاء إدخال عدد صحيح من البطاقات", false);
+          return;
+        }
+        
+        const selectedOption = document.getElementById("shareEventsSelect").options[document.getElementById("shareEventsSelect").selectedIndex];
+        const maxCards = parseInt(selectedOption.getAttribute("data-max"));
+        
+        if (amount > maxCards) {
+          showNotification(`❌ لا يمكن مشاركة أكثر من ${maxCards} بطاقة`, false);
+          return;
+        }
+        
+        if (targetUserId === currentUserId) {
+          showNotification("❌ لا يمكن مشاركة البطاقات مع نفسك", false);
+          return;
+        }
+        
+        // خصم البطاقات من المستخدم الحالي
+        const userVaultRef = ref(db, `vaults/${currentUserId}/${eventId}`);
+        get(userVaultRef).then(snapshot => {
+          let current = snapshot.exists() ? snapshot.val().count : 0;
+          
+          if (current < amount) {
+            showNotification("❌ لا تملك بطاقات كافية!", false);
+            return;
+          }
+          
+          // إضافة البطاقات للمستخدم المستهدف
+          const targetVaultRef = ref(db, `vaults/${targetUserId}/${eventId}`);
+          get(targetVaultRef).then(targetSnapshot => {
+            let targetCurrent = targetSnapshot.exists() ? targetSnapshot.val().count : 0;
+            
+            Promise.all([
+              update(userVaultRef, { count: current - amount }),
+              update(targetVaultRef, { 
+                count: targetCurrent + amount,
+                eventId: eventId,
+                userId: targetUserId,
+                updatedAt: Date.now(),
+                sharedFrom: currentUserId
+              })
+            ]).then(() => {
+              showNotification(`✅ تم مشاركة ${amount} بطاقة مع المستخدم ${targetUserId}`);
+              document.getElementById("shareUserIdInput").value = "";
+              document.getElementById("shareAmount").value = "";
+              document.getElementById("shareCardsModal").style.display = "none";
+              
+              // إعادة تحميل قائمة الأحداث للمشاركة
+              loadUserEventsForSharing();
+            }).catch(error => {
+              showNotification("❌ فشل في مشاركة البطاقات: " + error.message, false);
+            });
+          });
+        }).catch(error => {
+          showNotification("❌ فشل في الوصول إلى الخزنة: " + error.message, false);
+        });
+      };
+
+      // إغلاق نافذة مشاركة البطاقات
+      window.closeShareCards = function() {
+        document.getElementById("shareCardsModal").style.display = "none";
+        document.getElementById("shareUserIdInput").value = "";
+        document.getElementById("shareAmount").value = "";
+      };
+
+      // تحميل الأحداث النشطة للشراء
+      async function loadActiveEventsForPurchase() {
+        const eventsSelect = document.getElementById("eventsSelect");
+        eventsSelect.innerHTML = "";
+        
+        try {
+          const eventsRef = ref(db, "events/");
+          const snapshot = await get(eventsRef);
+          const data = snapshot.val();
+          
+          if (!data) {
+            eventsSelect.innerHTML = "<option value=''>لا توجد أحداث نشطة</option>";
+            return;
+          }
+          
+          const now = Date.now();
+          let hasActiveEvents = false;
+          
+          for (const [eventId, eventData] of Object.entries(data)) {
+            if (eventData.end > now) {
+              hasActiveEvents = true;
+              const option = document.createElement("option");
+              option.value = eventId;
+              option.textContent = eventData.name;
+              eventsSelect.appendChild(option);
+            }
+          }
+          
+          if (!hasActiveEvents) {
+            eventsSelect.innerHTML = "<option value=''>لا توجد أحداث نشطة</option>";
+          }
+        } catch (error) {
+          console.error("Error loading events:", error);
+          eventsSelect.innerHTML = "<option value=''>خطأ في تحميل الأحداث</option>";
+        }
+      }
+
+      // شراء البطاقات
+      window.buyCards = function() {
+        const secretCode = document.getElementById("secretCode").value;
+        const eventId = document.getElementById("eventsSelect").value;
+        const amount = parseInt(document.getElementById("buyAmount").value);
+        
+        if (secretCode !== "444") {
+          showNotification("❌ كلمة السر غير صحيحة", false);
+          return;
+        }
+        
+        if (!eventId) {
+          showNotification("⚠️ الرجاء اختيار حدث", false);
+          return;
+        }
+        
+        if (!amount || amount <= 0) {
+          showNotification("⚠️ الرجاء إدخال عدد صحيح من البطاقات", false);
+          return;
+        }
+        
+        // إضافة البطاقات إلى الخزنة
+        const vaultRef = ref(db, `vaults/${currentUserId}/${eventId}`);
+        get(vaultRef).then(snapshot => {
+          let current = snapshot.exists() ? snapshot.val().count : 0;
+          
+          update(vaultRef, { 
+            count: current + amount, 
+            updatedAt: Date.now(),
+            eventId: eventId,
+            userId: currentUserId
+          }).then(() => {
+            showNotification(`✅ تم شراء ${amount} بطاقة بنجاح`);
+            document.getElementById("secretCode").value = "";
+            document.getElementById("buyAmount").value = "";
+            document.getElementById("buyCardsModal").style.display = "none";
+            
+            // تحديث مستوى Prime بعد الشراء
+            updatePrimeLevel();
+          }).catch(error => {
+            showNotification("❌ فشل في شراء البطاقات: " + error.message, false);
+          });
+        }).catch(error => {
+          showNotification("❌ فشل في الوصول إلى الخزنة: " + error.message, false);
+        });
+      };
+
+      // إغلاق نافذة شراء البطاقات
+      window.closeBuyCards = function() {
+        document.getElementById("buyCardsModal").style.display = "none";
+        document.getElementById("secretCode").value = "";
+        document.getElementById("buyAmount").value = "";
+      };
+
+      // عرض الأحداث
+      const eventsRef = ref(db, "events/");
+      onValue(eventsRef, snapshot => {
+        const data = snapshot.val();
+        const container = document.getElementById("eventsContainer");
+        container.innerHTML = "";
+        
+        if (!data) {
+          container.innerHTML = `
+            <div class="no-events">
+              <i class="fas fa-calendar-times"></i>
+              <h3>لا توجد أحداث حالية</h3>
+              <p>لا توجد أي أحداث نشطة في الوقت الحالي.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        const now = Date.now();
+        let hasActiveEvents = false;
+        
+        Object.entries(data).forEach(([eventId, ev]) => {
+          // إخفاء الأحداث المنتهية
+          if (ev.end <= now) return;
+          
+          hasActiveEvents = true;
+          const timeLeft = ev.end - now;
+          const isPremiumEvent = ev.premium === true;
+          const isPrimeExclusive = ev.primeExclusive === true;
+          const isPrime9Exclusive = ev.prime9Exclusive === true;
+          
+          let timeText = "";
+          const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+          timeText = `متبقي: ${hours} ساعة ${minutes} دقيقة`;
+          
+          const eventCard = document.createElement("div");
+          eventCard.className = `event-card ${isPremiumEvent ? 'event-premium' : ''}`;
+          eventCard.setAttribute('data-event-id', eventId);
+          eventCard.setAttribute('data-prime-exclusive', isPrimeExclusive);
+          eventCard.setAttribute('data-prime9-exclusive', isPrime9Exclusive);
+          eventCard.setAttribute('data-start-time', ev.start);
+          
+          let spinButtonsHTML = "";
+          
+          if (isPrime9Exclusive) {
+            // حدث Prime 9 حصري
+            if (userPrime.level < 9) {
+              const delayTime = 60 * 60 * 1000; // ساعة واحدة
+              
+              if (now < ev.start + delayTime) {
+                // لا تظهر الأزرار حتى تمر ساعة
+                spinButtonsHTML = `<p class="text-center">هذا الحدث حصري لـ Prime 9</p>`;
+              } else {
+                // بعد مرور ساعة، تظهر الأزرار
+                spinButtonsHTML = `
+                  <div class="spin-buttons">
+                    <button class="btn btn-success" onclick="spin('${eventId}', 1, '${ev.name}', '${ev.bigPrize}', '${ev.otherPrize}', '${ev.cardImage}', ${ev.bigPrizeThreshold || 100})">
+                      <i class="fas fa-redo"></i> لف بطاقة واحدة
+                    </button>
+                    <button class="btn btn-warning" onclick="spin('${eventId}', 10, '${ev.name}', '${ev.bigPrize}', '${ev.otherPrize}', '${ev.cardImage}', ${ev.bigPrizeThreshold || 100})">
+                      <i class="fas fa-fast-forward"></i> لف 10 بطاقات
+                    </button>
+                  </div>
+                `;
+              }
+            } else {
+              // مستخدم Prime 9 يرى الأزرار مباشرة
+              spinButtonsHTML = `
+                <div class="spin-buttons">
+                  <button class="btn btn-success" onclick="spin('${eventId}', 1, '${ev.name}', '${ev.bigPrize}', '${ev.otherPrize}', '${ev.cardImage}', ${ev.bigPrizeThreshold || 100})">
+                    <i class="fas fa-redo"></i> لف بطاقة واحدة
+                    </button>
+                  <button class="btn btn-warning" onclick="spin('${eventId}', 10, '${ev.name}', '${ev.bigPrize}', '${ev.otherPrize}', '${ev.cardImage}', ${ev.bigPrizeThreshold || 100})">
+                    <i class="fas fa-fast-forward"></i> لف 10 بطاقات
+                  </button>
+                </div>
+              `;
+            }
+          } else if (isPrimeExclusive && userPrime.level < 7) {
+            // حدث Prime 7 حصري
+            const delayTime = 5 * 60 * 60 * 1000; // 5 ساعات
+            
+            if (now < ev.start + delayTime) {
+              // لا تظهر الأزرار حتى تمر 5 ساعات
+              spinButtonsHTML = `<p class="text-center">هذا الحدث حصري لـ Prime 7+</p>`;
+            } else {
+              // بعد مرور 5 ساعات، تظهر الأزرار
+              spinButtonsHTML = `
+                <div class="spin-buttons">
+                  <button class="btn btn-success" onclick="spin('${eventId}', 1, '${ev.name}', '${ev.bigPrize}', '${ev.otherPrize}', '${ev.cardImage}', ${ev.bigPrizeThreshold || 100})">
+                    <i class="fas fa-redo"></i> لف بطاقة واحدة
+                  </button>
+                  <button class="btn btn-warning" onclick="spin('${eventId}', 10, '${ev.name}', '${ev.bigPrize}', '${ev.otherPrize}', '${ev.cardImage}', ${ev.bigPrizeThreshold || 100})">
+                    <i class="fas fa-fast-forward"></i> لف 10 بطاقات
+                  </button>
+                </div>
+              `;
+            }
+          } else {
+            // حدث عادي أو مستخدم Prime 7+
+            spinButtonsHTML = `
+              <div class="spin-buttons">
+                <button class="btn btn-success" onclick="spin('${eventId}', 1, '${ev.name}', '${ev.bigPrize}', '${ev.otherPrize}', '${ev.cardImage}', ${ev.bigPrizeThreshold || 100})">
+                  <i class="fas fa-redo"></i> لف بطاقة واحدة
+                </button>
+                <button class="btn btn-warning" onclick="spin('${eventId}', 10, '${ev.name}', '${ev.bigPrize}', '${ev.otherPrize}', '${ev.cardImage}', ${ev.bigPrizeThreshold || 100})">
+                  <i class="fas fa-fast-forward"></i> لف 10 بطاقات
+                </button>
+              </div>
+            `;
+          }
+          
+          eventCard.innerHTML = `
+            ${isPremiumEvent ? '<div class="event-premium-badge">مميز</div>' : ''}
+            ${isPrimeExclusive ? '<div class="event-premium-badge">Prime 7+ حصري</div>' : ''}
+            ${isPrime9Exclusive ? '<div class="event-premium-badge prime-9">Prime 9 حصري</div>' : ''}
+            
+            <div class="event-header">
+              <h3>${ev.name}</h3>
+            </div>
+            <div class="event-body">
+              <div class="countdown">
+                <div class="countdown-text">${timeText}</div>
+              </div>
+              
+              <h4>الجائزة الكبرى</h4>
+              <img src="${ev.bigPrize}" alt="الجائزة الكبرى" class="prize-img medium-img">
+              
+              <h4>الجوائز الأخرى</h4>
+              <img src="${ev.otherPrize}" alt="الجوائز الأخرى" class="prize-img small-img">
+              
+              <h4>صورة البطاقة</h4>
+              <img src="${ev.cardImage}" alt="صورة البطاقة" class="prize-img small-img">
+            </div>
+            <div class="event-footer">
+              ${spinButtonsHTML}
+            </div>
+          `;
+          
+          container.appendChild(eventCard);
+        });
+        
+        if (!hasActiveEvents) {
+          container.innerHTML = `
+            <div class="no-events">
+              <i class="fas fa-calendar-times"></i>
+              <h3>لا توجد أحداث حالية</h3>
+              <p>لا توجد أي أحداث نشطة في الوقت الحالي.</p>
+            </div>
+          `;
+        }
+        
+        // تحديث عداد الأحداث الحصرية
+        updatePrimeExclusiveEvents();
+        
+        // تحديث أشرطة التقدم بعد تحميل الأحداث
+        updateProgressBars();
+      });
+
+      // دالة اللف
+      window.spin = async function(eventId, amount, eventName, bigPrize, otherPrize, cardImage, bigPrizeThreshold) {
+        const vaultRef = ref(db, `vaults/${currentUserId}/${eventId}`);
+        const snapshot = await get(vaultRef);
+        let current = snapshot.exists() ? snapshot.val().count : 0;
+        
+        if (current < amount) {
+          showNotification("❌ لا تملك بطاقات كافية!", false);
+          return;
+        }
+        
+        // عرض spinner أثناء المعالجة
+        document.getElementById("spinner").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
+        
+        try {
+          await update(vaultRef, { 
+            count: current - amount, 
+            updatedAt: Date.now() 
+          });
+          
+          // محاكاة عملية اللف والحصول على الجوائز
+          setTimeout(async () => {
+            document.getElementById("spinner").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+            
+            // تحديث تقدم المستخدم
+            if (!userProgress[eventId]) {
+              userProgress[eventId] = 0;
+            }
+            
+            userProgress[eventId] += amount;
+            localStorage.setItem("userProgress", JSON.stringify(userProgress));
+            
+            // التحقق إذا وصل إلى عتبة الجائزة الكبرى
+            const hasReachedThreshold = userProgress[eventId] >= bigPrizeThreshold;
+            const remainingForBigPrize = hasReachedThreshold ? 0 : bigPrizeThreshold - userProgress[eventId];
+            
+            let prizesWon = [];
+            let smallPrizesWon = [];
+            
+            if (hasReachedThreshold) {
+              // فاز بالجائزة الكبرى - الحصول على رقم حقيقي متسلسل
+              const prizeNumber = await getNextBigPrizeNumber(eventId);
+              
+              prizesWon.push({
+                type: "big",
+                image: bigPrize,
+                name: `الجائزة الكبرى - ${eventName}`,
+                number: prizeNumber
+              });
+              
+              // حفظ الجائزة للمستخدم
+              if (!userPrizes[eventId]) userPrizes[eventId] = [];
+              userPrizes[eventId].push({
+                type: "big",
+                image: bigPrize,
+                name: `الجائزة الكبرى - ${eventName}`,
+                number: prizeNumber,
+                date: new Date().toLocaleString('ar-SA')
+              });
+              
+              // إعادة ضبط العداد للجولة القادمة مع الاحتفاظ بالتقدم الزائد
+              userProgress[eventId] = userProgress[eventId] - bigPrizeThreshold;
+              localStorage.setItem("userProgress", JSON.stringify(userProgress));
+              
+              // عرض إشعار الجائزة الكبرى مع العداد
+              showBigPrizeNotification(eventName, prizeNumber);
+            }
+            
+            // فرص الفوز بالجوائز الصغيرة (30% فرصة لكل لفّة)
+            const smallPrizeChance = 0.3;
+            
+            for (let i = 0; i < amount; i++) {
+              const rand = Math.random();
+              
+              if (rand < smallPrizeChance) {
+                // فاز بجائزة صغيرة
+                smallPrizesWon.push({
+                  type: "small",
+                  image: otherPrize,
+                  name: `جائزة صغيرة - ${eventName}`
+                });
+                
+                // الجوائز الصغيرة لا تحفظ، فقط تظهر للمستخدم
+              }
+            }
+            
+            // حفظ الجوائز الكبرى فقط في localStorage
+            localStorage.setItem("userPrizes", JSON.stringify(userPrizes));
+            
+            // عرض الجوائز التي فاز بها (الكبرى والصغيرة) إذا لم تكن جائزة كبرى
+            if (!hasReachedThreshold) {
+              const allPrizes = [...prizesWon, ...smallPrizesWon];
+              if (allPrizes.length > 0) {
+                const hasBigPrize = prizesWon.length > 0;
+                showPrizes(allPrizes, hasBigPrize);
+              } else {
+                showNotification(`✅ لقد استخدمت ${amount} بطاقة! لم تفز بأي جوائز هذه المرة.`);
+              }
+            }
+            
+            // تحديث أشرطة التقدم بعد اللف
+            updateProgressBars();
+            updatePrimeLevel();
+          }, 2000);
+          
+        } catch (error) {
+          document.getElementById("spinner").style.display = "none";
+          document.getElementById("overlay").style.display = "none";
+          showNotification("❌ فشل في عملية اللف: " + error.message, false);
+        }
+      };
+
+      // تحديث أشرطة التقدم
+      async function updateProgressBars() {
+        const progressContainer = document.getElementById("progressContainer");
+        progressContainer.innerHTML = "";
+        
+        try {
+          const eventsRef = ref(db, "events/");
+          const eventsSnapshot = await get(eventsRef);
+          const eventsData = eventsSnapshot.val() || {};
+          
+          const vaultRef = ref(db, `vaults/${currentUserId}`);
+          const vaultSnapshot = await get(vaultRef);
+          const vaultData = vaultSnapshot.val() || {};
+          
+          if (Object.keys(vaultData).length === 0) {
+            progressContainer.innerHTML = "<p>لا توجد بطاقات في الخزنة بعد</p>";
+            return;
+          }
+          
+          let hasProgress = false;
+          
+          for (const [eventId, eventData] of Object.entries(eventsData)) {
+            if (vaultData[eventId]) {
+              hasProgress = true;
+              const threshold = eventData.bigPrizeThreshold || 100;
+              const userCards = vaultData[eventId].count || 0;
+              const currentProgress = userProgress[eventId] || 0;
+              const progress = Math.min(100, (currentProgress / threshold) * 100);
+              
+              const progressHTML = `
+                <div class="progress-container">
+                  <h4>${eventData.name}</h4>
+                  <div class="progress-info">
+                    <span>التقدم نحو الجائزة الكبرى</span>
+                    <span>${currentProgress} / ${threshold}</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${progress}%">${Math.round(progress)}%</div>
+                  </div>
+                  <div class="progress-label">
+                    ${currentProgress >= threshold ? '🎉 مبروك! أنت مؤهل للجائزة الكبرى في اللفة القادمة!' : `يبقى ${threshold - currentProgress} لفّة للجائزة الكبرى`}
+                  </div>
+                </div>
+              `;
+              
+              progressContainer.innerHTML += progressHTML;
+            }
+          }
+          
+          if (!hasProgress) {
+            progressContainer.innerHTML = "<p>لا توجد بطاقات في الخزنة بعد</p>";
+          }
+        } catch (error) {
+          progressContainer.innerHTML = `<p>خطأ في تحميل بيانات التقدم: ${error.message}</p>`;
+        }
+      }
+
+      // عرض الخزنة
+      window.showVault = async function() {
+        const modal = document.getElementById("vaultModal");
+        const vaultGrid = document.getElementById("vaultGrid");
+        const loadingText = document.getElementById("vaultLoading");
+        
+        modal.style.display = "flex";
+        vaultGrid.innerHTML = "";
+        loadingText.style.display = "block";
+        
+        try {
+          const vaultRef = ref(db, `vaults/${currentUserId}`);
+          const snapshot = await get(vaultRef);
+          const data = snapshot.val();
+          
+          loadingText.style.display = "none";
+          
+          if (!data) {
+            vaultGrid.innerHTML = "<p>لا توجد بطاقات في الخزنة</p>";
+            return;
+          }
+          
+          // الحصول على بيانات الأحداث لعرض صور البطاقات
+          const eventsRef = ref(db, "events/");
+          const eventsSnapshot = await get(eventsRef);
+          const eventsData = eventsSnapshot.val() || {};
+          
+          let hasCards = false;
+          
+          for (const [eventId, vaultData] of Object.entries(data)) {
+            if (vaultData.count > 0) {
+              hasCards = true;
+              const eventName = eventsData[eventId]?.name || `الحدث (${eventId})`;
+              const cardImage = eventsData[eventId]?.cardImage || "";
+              
+              const cardItem = document.createElement("div");
+              cardItem.className = "card-item";
+              cardItem.innerHTML = `
+                <img src="${cardImage}" alt="${eventName}">
+                <div class="card-count">${vaultData.count}</div>
+                <div>${eventName}</div>
+              `;
+              
+              vaultGrid.appendChild(cardItem);
+            }
+          }
+          
+          if (!hasCards) {
+            vaultGrid.innerHTML = "<p>لا توجد بطاقات في الخزنة</p>";
+          }
+        } catch (error) {
+          loadingText.style.display = "none";
+          vaultGrid.innerHTML = `<p>خطأ في تحميل البيانات: ${error.message}</p>`;
+        }
+      };
+
+      // عرض الجوائز (الكبرى فقط)
+      window.showPrizes = function() {
+        const modal = document.getElementById("prizesModal");
+        const prizesGrid = document.getElementById("prizesGrid");
+        
+        modal.style.display = "flex";
+        prizesGrid.innerHTML = "";
+        
+        if (Object.keys(userPrizes).length === 0) {
+          prizesGrid.innerHTML = "<p>لم تفز بأي جوائز كبرى بعد</p>";
+          return;
+        }
+        
+        for (const [eventId, prizes] of Object.entries(userPrizes)) {
+          prizes.forEach(prize => {
+            const prizeItem = document.createElement("div");
+            prizeItem.className = "prize-item";
+            prizeItem.innerHTML = `
+              <img src="${prize.image}" alt="${prize.name}">
+              <div>${prize.name}</div>
+              <div class="prize-number">رقم الجائزة: ${prize.number}</div>
+              <div class="prize-date">${prize.date}</div>
+            `;
+            
+            prizesGrid.appendChild(prizeItem);
+          });
+        }
+      };
+
+      // إغلاق النوافذ
+      window.closeVault = function() {
+        document.getElementById("vaultModal").style.display = "none";
+      };
+      
+      window.closePrizesModal = function() {
+        document.getElementById("prizesModal").style.display = "none";
+      };
+      
+      window.closePrizeNotification = function() {
+        document.getElementById("prizeNotification").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+      };
+      
+      window.closePrimeNotification = function() {
+        document.getElementById("primeNotification").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+      };
+      
+      window.closeBigPrizeNotification = function() {
+        document.getElementById("bigPrizeNotification").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("countdownAnimation").style.display = "block";
+        document.getElementById("prizeNumber").style.display = "none";
+      };
+      
+      window.closeLegendaryNotification = function() {
+        document.getElementById("legendaryNotification").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+      };
+    });
+
+    // تحديث عداد الأحداث الحصرية كل ثانية
+    setInterval(updatePrimeExclusiveEvents, 1000);
+  </script>
+</head>
+<body>
+  <div id="notification" class="notification"></div>
+  
+  <!-- نافذة الجائزة الكبرى -->
+  <div id="bigPrizeNotification" class="big-prize-notification">
+    <i class="fas fa-trophy" style="font-size: 64px; color: gold; margin-bottom: 15px;"></i>
+    <h3>تهانينا! لقد فزت بالجائزة الكبرى</h3>
+    <div id="countdownAnimation" class="countdown-animation">5</div>
+    <div id="prizeNumber" style="font-size: 24px; font-weight: bold; display: none;"></div>
+    <button class="btn btn-success" onclick="closeBigPrizeNotification()" style="margin-top: 20px;">موافق</button>
+  </div>
+  
+  <div id="prizeNotification" class="prize-notification">
+    <h3 id="prizeTitle">مبروك! لقد فزت</h3>
+    <div id="prizesContainer" class="prizes-container"></div>
+    <button class="btn btn-success" onclick="closePrizeNotification()">موافق</button>
+  </div>
+  
+  <div id="primeNotification" class="prime-notification">
+    <i id="primeIcon" class="fas fa-crown"></i>
+    <h3>تهانينا!</h3>
+    <div id="primeLevel" class="prime-level">Prime 1</div>
+    <p>لقد وصلت إلى مستوى Prime جديد!</p>
+    <button class="btn btn-success" onclick="closePrimeNotification()">موافق</button>
+  </div>
+  
+  <!-- إشعار Prime 10 الأسطوري -->
+  <div id="legendaryNotification" class="legendary-notification">
+    <i class="fas fa-crown legendary-icon"></i>
+    <h3 style="color: #ffd700; margin-bottom: 15px;">هدية Prime 10 الأسطورية!</h3>
+    <p style="color: #ffd700; margin-bottom: 10px;">لقد حصلت على مكافأتك نصف الساعة كعضو Prime 10</p>
+    <p style="color: #ffd700; margin-bottom: 10px;">لقد أضفنا إلى حسابك <span id="legendaryCardsCount" style="font-weight: bold;">500</span> بطاقة من حدث</p>
+    <p style="color: #ffd700; font-weight: bold;" id="legendaryEventName"></p>
+    <button class="btn btn-premium" onclick="closeLegendaryNotification()" style="margin-top: 20px; background: #ffd700; color: #000;">موافق</button>
+  </div>
+  
+  <div id="overlay" class="overlay"></div>
+  <div class="spinner" id="spinner">
+    <i class="fas fa-spinner"></i>
+  </div>
+  
+  <!-- نافذة المشاركة -->
+  <div id="shareModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">مشاركة الحساب</h3>
+        <button class="btn" onclick="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="shareOptions" class="modal-options">
+        <div class="modal-option" onclick="showSharePasswordSection()">
+          <i class="fas fa-key"></i> إنشاء كلمة مرور لحسابك
+        </div>
+        <div class="modal-option" onclick="showLoginSection()">
+          <i class="fas fa-sign-in-alt"></i> الدخول بحساب آخر
+        </div>
+      </div>
+      <div id="sharePasswordSection" style="display: none;">
+        <div class="form-group">
+          <label>كلمة المرور الجديدة</label>
+          <input type="password" id="sharePasswordInput" placeholder="أدخل كلمة مرور">
+        </div>
+        <button class="btn btn-success btn-block" onclick="sharePassword()">
+          <i class="fas fa-save"></i> حفظ كلمة المرور
+        </button>
+      </div>
+      <div id="loginSection" style="display: none;">
+        <div class="form-group">
+          <label>معرف الحساب</label>
+          <input type="text" id="loginUserIdInput" placeholder="أدخل معرف الحساب">
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="loginPasswordInput" placeholder="أدخل كلمة المرور">
+        </div>
+        <button class="btn btn-success btn-block" onclick="loginWithPassword()">
+          <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة شراء البطاقات -->
+  <div id="buyCardsModal" class="buy-cards-modal">
+    <div class="buy-cards-content">
+      <div class="buy-cards-header">
+        <h3 class="buy-cards-title"><i class="fas fa-shopping-cart"></i> شراء البطاقات</h3>
+        <button class="btn" onclick="closeBuyCards()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="form-group">
+        <label for="eventsSelect">اختر الحدث</label>
+        <select id="eventsSelect">
+          <option value="">جاري تحميل الأحداث...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="buyAmount">عدد البطاقات</label>
+        <input type="number" id="buyAmount" placeholder="أدخل عدد البطاقات" min="1">
+      </div>
+      <div class="form-group">
+        <label for="secretCode">كلمة السر</label>
+        <input type="password" id="secretCode" placeholder="أدخل كلمة السر">
+      </div>
+      <button class="btn btn-success btn-block" onclick="buyCards()">
+        <i class="fas fa-check"></i> تأكيد الشراء
+      </button>
+    </div>
+  </div>
+
+  <!-- نافذة مشاركة البطاقات -->
+  <div id="shareCardsModal" class="share-cards-modal">
+    <div class="share-cards-content">
+      <div class="share-cards-header">
+        <h3 class="share-cards-title"><i class="fas fa-share-alt"></i> مشاركة البطاقات</h3>
+        <button class="btn" onclick="closeShareCards()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="form-group">
+        <label for="shareUserIdInput">معرف المستخدم المستهدف</label>
+        <input type="text" id="shareUserIdInput" placeholder="أدخل معرف المستخدم">
+      </div>
+      <div class="form-group">
+        <label for="shareEventsSelect">اختر الحدث</label>
+        <select id="shareEventsSelect" onchange="updateMaxCards()">
+          <option value="">جاري تحميل الأحداث...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="shareAmount">عدد البطاقات للمشاركة</label>
+        <input type="number" id="shareAmount" placeholder="أدخل عدد البطاقات" min="1">
+      </div>
+      <button class="btn btn-success btn-block" onclick="shareCardsWithUser()">
+        <i class="fas fa-paper-plane"></i> مشاركة البطاقات
+      </button>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <i class="fas fa-ticket-alt"></i> تطبيق الأحداث
+        </div>
+        <div id="primeBadge" class="prime-badge" style="display: none;"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- معلومات المستخدم -->
+    <div class="user-box">
+      <div class="user-info">
+        <span class="user-id-label">معرفك:</span>
+        <span class="user-id-value" id="userIdText"></span>
+      </div>
+      <div>
+        <button class="btn" onclick="copyId()">
+          <i class="fas fa-copy"></i> نسخ المعرف
+        </button>
+        <button class="btn btn-success" onclick="showVault()">
+          <i class="fas fa-vault"></i> الخزنة
+        </button>
+        <button class="btn btn-warning" onclick="showPrizes()">
+          <i class="fas fa-gift"></i> جوائزي
+        </button>
+        <button class="btn btn-premium" onclick="openBuyCards()">
+          <i class="fas fa-shopping-cart"></i> شراء بطاقات
+        </button>
+        <button class="btn" style="background: #17a2b8;" onclick="openShareCards()">
+          <i class="fas fa-share-alt"></i> مشاركة بطاقات
+        </button>
+        <button class="btn btn-danger" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> تسجيل خروج
+        </button>
+        <button class="btn" onclick="shareAccount()">
+          <i class="fas fa-share-alt"></i> مشاركة
+        </button>
+      </div>
+    </div>
+
+    <!-- شريط تقدم Prime -->
+    <div class="prime-progress">
+      <div id="primeProgress"></div>
+      <div id="primeLevels" class="prime-levels"></div>
+    </div>
+
+    <!-- شريط التقدم نحو الجوائز الكبرى -->
+    <h2 style="margin-bottom: 15px;"><i class="fas fa-chart-line"></i> تقدمك نحو الجوائز الكبرى</h2>
+    <div id="progressContainer" class="progress-container">
+      <p>جاري تحميل بيانات التقدم...</p>
+    </div>
+
+    <!-- قائمة الأحداث -->
+    <h2 style="margin-bottom: 15px; margin-top: 30px;"><i class="fas fa-calendar-alt"></i> الأحداث المتاحة</h2>
+    <div id="eventsContainer" class="events-grid"></div>
+  </div>
+
+  <!-- نافذة الخزنة -->
+  <div id="vaultModal" class="vault-modal">
+    <div class="vault-content">
+      <div class="vault-header">
+        <h3 class="vault-title"><i class="fas fa-vault"></i> خزنة البطاقات</h3>
+        <button class="btn" onclick="closeVault()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p id="vaultLoading">جاري تحميل البيانات...</p>
+      <div id="vaultGrid" class="vault-grid"></div>
+    </div>
+  </div>
+
+  <!-- نافذة الجوائز -->
+  <div id="prizesModal" class="vault-modal">
+    <div class="vault-content">
+      <div class="vault-header">
+        <h3 class="vault-title"><i class="fas fa-gift"></i> الجوائز الكبرى التي فزت بها</h3>
+        <button class="btn" onclick="closePrizesModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="prizesGrid" class="vault-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    // إضافة تأثيرات للعناصر عند التحميل
+    document.addEventListener('DOMContentLoaded', function() {
+      const eventCards = document.querySelectorAll('.event-card');
+      eventCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          card.style.transition = 'opacity 0.5s, transform 0.5s';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 100 * index);
+      });
+    });
+
+    // إغلاق النوافذ عند النقر خارجها
+    const modals = document.querySelectorAll('.modal, .vault-modal, .buy-cards-modal, .share-cards-modal');
+    modals.forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          if (this.id === 'shareModal') closeModal();
+          if (this.id === 'vaultModal') closeVault();
+          if (this.id === 'prizesModal') closePrizesModal();
+          if (this.id === 'buyCardsModal') closeBuyCards();
+          if (this.id === 'shareCardsModal') closeShareCards();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
